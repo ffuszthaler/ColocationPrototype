@@ -45,7 +45,7 @@ public class ClientManager : MonoBehaviour
         }
         else
         {
-            DownloadSharedAnchor();
+            StartCoroutine(DownloadSharedAnchors());
         }
     }
 
@@ -92,14 +92,20 @@ public class ClientManager : MonoBehaviour
         }
     }
 
-    private void DownloadSharedAnchor()
+    private IEnumerator DownloadSharedAnchors()
     {
         Debug.Log("Downloading shared anchor.");
-        // Implement anchor retrieval logic here
-
+        
         if (Guid.TryParse(sessionUUID, out Guid anchorUuid))
         {
-            // LoadAnchorsByUuid(new List<Guid> { anchorUuid });
+            List<OVRSpatialAnchor.UnboundAnchor> unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
+            var anchorRequest = OVRSpatialAnchor.LoadUnboundSharedAnchorsAsync(anchorUuid, unboundAnchors);
+            yield return new WaitUntil(() => anchorRequest.IsCompleted);
+            foreach (var unboundAnchor in anchorRequest.GetResult().Value)
+            {
+                var localizeReq = unboundAnchor.LocalizeAsync();
+                yield return new WaitUntil(() => localizeReq.IsCompleted);
+            }
         }
         else
         {
