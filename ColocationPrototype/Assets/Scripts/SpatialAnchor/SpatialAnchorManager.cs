@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 
 public class SpatialAnchorManager : MonoBehaviour
 {
     private Guid anchorGroupID;
+    
+    [SerializeField] ShareUUID uuid;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,6 +53,10 @@ public class SpatialAnchorManager : MonoBehaviour
         
         if (shareRes.Success)
         {
+            // set network variable to uuid after sharing it with meta
+            FixedString64Bytes guid = shareResult.ToString(); 
+            uuid.ColocationUUID.Value = guid;
+            
             Debug.Log("Shared spacial anchor: " + shareRes.Status.ToString());
         }
         else

@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac3e79b3-2a1d-4cfe-9abf-539d5f94fd4d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/OculusPlatformSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/OculusPlatformSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/XR/Settings/OpenXR Package Settings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/XR/Settings/OpenXR Package Settings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SpatialAnchor/SpatialAnchorManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SpatialAnchor/SpatialAnchorManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +101,7 @@
       <option name="presentableId" value="Default" />
       <updated>1743405598427</updated>
       <workItem from="1743405602429" duration="2233000" />
-      <workItem from="1743411192442" duration="24000" />
+      <workItem from="1743411192442" duration="1350000" />
     </task>
     <servers />
   </component>
