@@ -14,7 +14,7 @@ public class ClientManager : MonoBehaviour
 
     // private List<OVRSpatialAnchor.UnboundAnchor> _unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
 
-    // [SerializeField] private ShareUUID uuid;
+    [SerializeField] private AlignPlayer alignPlayer;
 
     private void Awake()
     {
@@ -95,7 +95,7 @@ public class ClientManager : MonoBehaviour
     private IEnumerator DownloadSharedAnchors()
     {
         Debug.Log("Downloading shared anchor.");
-        
+
         if (Guid.TryParse(sessionUUID, out Guid anchorUuid))
         {
             List<OVRSpatialAnchor.UnboundAnchor> unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
@@ -105,6 +105,12 @@ public class ClientManager : MonoBehaviour
             {
                 var localizeReq = unboundAnchor.LocalizeAsync();
                 yield return new WaitUntil(() => localizeReq.IsCompleted);
+                GameObject go = new GameObject("GO");
+                Instantiate(go);
+                go.transform.position = unboundAnchor.Pose.position;
+                go.transform.rotation = unboundAnchor.Pose.rotation;
+
+                alignPlayer.SetAlignmentAnchor(go.transform);
             }
         }
         else
