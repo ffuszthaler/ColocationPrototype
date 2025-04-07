@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ac3e79b3-2a1d-4cfe-9abf-539d5f94fd4d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.utmp/RelWithDebInfo/2j1c3g6o/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.utmp/RelWithDebInfo/2j1c3g6o/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ClientManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ClientManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +33,8 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ClientManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ServerManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UUID/ShareUUID.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.meta.xr.sdk.core/Scripts/BuildingBlocks/MultiplayerBlocks/NGO/NetworkGrabbableObject/ClientNetworkTransform.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.meta.xr.sdk.core/Scripts/BuildingBlocks/MultiplayerBlocks/NGO/NetworkGrabbableObject/TransferOwnershipNGO.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.meta.xr.sdk.core/Scripts/OVRCameraRig.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -114,7 +112,7 @@
       <workItem from="1743508109081" duration="25000" />
       <workItem from="1743929432326" duration="40000" />
       <workItem from="1743929485601" duration="1222000" />
-      <workItem from="1744009957682" duration="4175000" />
+      <workItem from="1744009957682" duration="6148000" />
     </task>
     <servers />
   </component>
