@@ -10,7 +10,7 @@ public class ClientManager : MonoBehaviour
     private string sessionUUID;
     private List<ulong> clientList = new List<ulong>();
     private OVRSpatialAnchor sharedAnchor;
-    private Guid anchorGroupID;
+    // private Guid anchorGroupID;
 
     // private List<OVRSpatialAnchor.UnboundAnchor> _unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
 
@@ -52,7 +52,7 @@ public class ClientManager : MonoBehaviour
     private IEnumerator CreateAndShareAnchor()
     {
         Debug.Log("Creating spatial anchor");
-        anchorGroupID = Guid.NewGuid();
+        // anchorGroupID = Guid.NewGuid();
 
         sharedAnchor = gameObject.AddComponent<OVRSpatialAnchor>();
         yield return new WaitUntil(() => sharedAnchor.Created);
@@ -65,7 +65,7 @@ public class ClientManager : MonoBehaviour
         var saveRes = saveResult.GetResult();
         if (saveRes.Success)
         {
-            Debug.Log("Saved spatial anchor: " + saveRes.Status.ToString());
+            Debug.Log("Saved spatial anchor: " + saveRes.Status.ToString() + " UUID: " + sessionUUID);
         }
         else
         {
@@ -73,7 +73,8 @@ public class ClientManager : MonoBehaviour
             yield break;
         }
 
-        var shareResult = sharedAnchor.ShareAsync(anchorGroupID);
+        // var shareResult = sharedAnchor.ShareAsync(anchorGroupID);
+        var shareResult = sharedAnchor.ShareAsync(new Guid(sessionUUID));
         yield return new WaitUntil(() => shareResult.IsCompleted);
 
         var shareRes = shareResult.GetResult();
@@ -84,7 +85,7 @@ public class ClientManager : MonoBehaviour
 
             // _unboundAnchors.Add(shareRes);
 
-            Debug.Log("Shared spatial anchor: " + shareRes.Status.ToString());
+            Debug.Log("Shared spatial anchor: " + shareRes.Status.ToString() + " UUID: " + sessionUUID);
         }
         else
         {
@@ -94,14 +95,15 @@ public class ClientManager : MonoBehaviour
 
     private IEnumerator DownloadSharedAnchors()
     {
-        Debug.Log("Downloading shared anchor.");
+        Debug.Log("Downloading shared anchor." + " sessionUUID: " + sessionUUID);
+        // Debug.Log("Downloading shared anchor." + " anchorGroupID: " + anchorGroupID + " sessionUUID: " + sessionUUID);
 
         if (Guid.TryParse(sessionUUID, out Guid anchorUuid))
         {
             List<OVRSpatialAnchor.UnboundAnchor> unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
-            var anchorRequest = OVRSpatialAnchor.LoadUnboundSharedAnchorsAsync(anchorUuid, unboundAnchors);
-            yield return new WaitUntil(() => anchorRequest.IsCompleted);
-            foreach (var unboundAnchor in anchorRequest.GetResult().Value)
+            var anchorTask = OVRSpatialAnchor.LoadUnboundSharedAnchorsAsync(anchorUuid, unboundAnchors);
+            yield return new WaitUntil(() => anchorTask.IsCompleted);
+            foreach (var unboundAnchor in anchorTask.GetResult().Value)
             {
                 var localizeReq = unboundAnchor.LocalizeAsync();
                 yield return new WaitUntil(() => localizeReq.IsCompleted);
