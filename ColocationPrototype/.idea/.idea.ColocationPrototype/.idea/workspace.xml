@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ac3e79b3-2a1d-4cfe-9abf-539d5f94fd4d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ColocationPrototype/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -113,6 +114,7 @@
       <workItem from="1743929432326" duration="40000" />
       <workItem from="1743929485601" duration="1222000" />
       <workItem from="1744009957682" duration="6148000" />
+      <workItem from="1745225931516" duration="610000" />
     </task>
     <servers />
   </component>
