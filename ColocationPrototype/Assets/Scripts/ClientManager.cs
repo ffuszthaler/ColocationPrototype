@@ -10,6 +10,7 @@ public class ClientManager : MonoBehaviour
     private string sessionUUID;
     private List<ulong> clientList = new List<ulong>();
     private OVRSpatialAnchor sharedAnchor;
+    private bool alreadySynced = false;
     // private Guid anchorGroupID;
 
     // private List<OVRSpatialAnchor.UnboundAnchor> _unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
@@ -39,14 +40,21 @@ public class ClientManager : MonoBehaviour
 
     private void HandleSpatialAnchor()
     {
+        if (alreadySynced)
+        {
+            return;
+        }
         if (clientList.Count == 1)
         {
             StartCoroutine(CreateAndShareAnchor());
+            alreadySynced = true;
         }
         else
         {
             StartCoroutine(DownloadSharedAnchors());
+            alreadySynced = true;
         }
+        
     }
 
     private IEnumerator CreateAndShareAnchor()
