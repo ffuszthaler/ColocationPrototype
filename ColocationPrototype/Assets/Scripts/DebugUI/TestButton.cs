@@ -16,6 +16,6 @@ public class TestButton : MonoBehaviour
     
     public void SayHello()
     {
-        Debug.Log("HI");
+        Debug.Log("Test");
     }
 }
