@@ -11,6 +11,7 @@ namespace Multiplayer
         public static ClientManager Instance { get; private set; }
 
         [SerializeField] private AlignPlayer alignPlayer; // Reference to the alignment script
+        [SerializeField] private GameObject anchorPrefab; // The anchor prefab to use for alignment
 
         private string _targetAnchorUUID;       // The UUID we should create (as host) or load (as client)
         private OVRSpatialAnchor _alignmentAnchor; // The actual anchor component used for alignment
@@ -226,9 +227,13 @@ namespace Multiplayer
                 yield break;
             }
 
-            Debug.Log($"Client: Anchor {unboundAnchorToLocalize.Uuid} LocalizeAsync reported success. Now finding the created OVRSpatialAnchor component...");
+            Debug.Log($"Client: Anchor {unboundAnchorToLocalize.Uuid} LocalizeAsync reported success. Now binding the created OVRSpatialAnchor component...");
         
             // Bind localized unbound anchor to spatial anchor in prefab
+            var anchor = Instantiate(anchorPrefab).GetComponent<OVRSpatialAnchor>();
+            unboundAnchorToLocalize.BindTo(anchor);
+            _alignmentAnchor = anchor;
+            AlignToAnchor();
         }
 
         private void AlignToAnchor()
