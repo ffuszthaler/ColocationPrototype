@@ -57,7 +57,7 @@ namespace Multiplayer
             // If running as Server+Client (Host mode in Netcode), this client is definitely the host.
             if (NetworkManager.Singleton.IsHost) _isHost = true;
 
-            Debug.Log($"Client {myId}: Determined role. Is Host = {_isHost}");
+            Debug.Log($"[Client] Client {myId}: Determined role. Is Host = {_isHost}");
 
             if (_isHost)
             {
@@ -70,7 +70,7 @@ namespace Multiplayer
             else
             {
                 // Client waits for UUID from ServerManager via NetworkVariable callback (OnAnchorUUIDChanged)
-                Debug.Log($"Client {myId}: Waiting for anchor UUID from host/server...");
+                Debug.Log($"[Client] Client {myId}: Waiting for anchor UUID from host/server...");
             }
         }
 
@@ -81,14 +81,14 @@ namespace Multiplayer
 
             if (string.IsNullOrEmpty(uuid))
             {
-                Debug.LogWarning("Received an empty or null UUID.");
+                Debug.LogWarning("[Client] Received an empty or null UUID.");
                 return;
             }
 
             // If we already have a different UUID or are already aligned, handle appropriately
             if (!string.IsNullOrEmpty(_targetAnchorUUID) && _targetAnchorUUID != uuid)
             {
-                Debug.LogWarning($"Received new anchor UUID {uuid}, but was already targeting {_targetAnchorUUID}. Resetting state.");
+                Debug.LogWarning($"[Client] Received new anchor UUID {uuid}, but was already targeting {_targetAnchorUUID}. Resetting state.");
                 // Reset alignment state if the anchor changes
                 ResetAlignment();
             }
@@ -96,7 +96,7 @@ namespace Multiplayer
 
             if (!_isAligned && !_anchorLoadRequested)
             {
-                Debug.Log($"Client received UUID to load: {uuid}");
+                Debug.Log($"[Client] Client received UUID to load: {uuid}");
                 _targetAnchorUUID = uuid;
                 AttemptLoadAnchor();
             }
@@ -106,12 +106,12 @@ namespace Multiplayer
         {
             if (_alignmentAnchor != null || !string.IsNullOrEmpty(_targetAnchorUUID))
             {
-                Debug.LogWarning("Create anchor called, but anchor already exists or UUID is set.");
+                Debug.LogWarning("[Client] Create anchor called, but anchor already exists or UUID is set.");
                 return; // Already created or received UUID
             }
             if (!_isHost) return; // Only host creates
 
-            Debug.Log("Host: Attempting to create and save anchor...");
+            Debug.Log("[Client] Host: Attempting to create and save anchor...");
             StartCoroutine(CreateAndSaveAnchorRoutine());
         }
 
@@ -132,11 +132,11 @@ namespace Multiplayer
 
             if (!newAnchor.Created)
             {
-                Debug.LogError("Host: Failed to create OVRSpatialAnchor component.");
+                Debug.LogError("[Client] Host: Failed to create OVRSpatialAnchor component.");
                 Destroy(anchorGO);
                 yield break;
             }
-            Debug.Log($"Host: Anchor component created. Initial UUID: {newAnchor.Uuid}");
+            Debug.Log($"[Client] Host: Anchor component created. Initial UUID: {newAnchor.Uuid}");
 
             var saveTask = newAnchor.SaveAnchorAsync();
             yield return new WaitUntil(() => saveTask.IsCompleted);
@@ -145,15 +145,15 @@ namespace Multiplayer
             {
                 _alignmentAnchor = newAnchor; // Store reference
                 _targetAnchorUUID = _alignmentAnchor.Uuid.ToString();
-                Debug.Log($"Host: Anchor saved successfully to Cloud. Final UUID: {_targetAnchorUUID}");
+                Debug.Log($"[Client] Host: Anchor saved successfully to Cloud. Final UUID: {_targetAnchorUUID}");
 
                 // --- Report UUID to Server ---
                 ServerManager serverManager = FindFirstObjectByType<ServerManager>(); // Find the server manager instance
                 if(serverManager != null)
                 {
                     serverManager.RequestSetSharedAnchorUuidServerRpc(_targetAnchorUUID);
-                    Debug.Log("Host: Sent anchor UUID to server.");
-                } else { Debug.LogError("Host: Could not find ServerManager to report UUID!"); }
+                    Debug.Log("[Client] Host: Sent anchor UUID to server.");
+                } else { Debug.LogError("[Client] Host: Could not find ServerManager to report UUID!"); }
                 // --------------------------
 
                 // Host aligns itself immediately
@@ -161,7 +161,7 @@ namespace Multiplayer
             }
             else
             {
-                Debug.LogError($"Host: Failed to save anchor: {saveTask.GetResult()}");
+                Debug.LogError($"[Client] Host: Failed to save anchor: {saveTask.GetResult()}");
                 Destroy(anchorGO);
             }
         }
@@ -175,20 +175,20 @@ namespace Multiplayer
 
             if (Guid.TryParse(_targetAnchorUUID, out Guid anchorGuid))
             {
-                Debug.Log($"Client: Attempting to load anchor with UUID: {anchorGuid}");
+                Debug.Log($"[Client] Client: Attempting to load anchor with UUID: {anchorGuid}");
                 _anchorLoadRequested = true;
                 StartCoroutine(LoadAnchorRoutine(anchorGuid));
             }
             else
             {
-                Debug.LogError($"Client: Invalid anchor UUID format: {_targetAnchorUUID}");
+                Debug.LogError($"[Client] Client: Invalid anchor UUID format: {_targetAnchorUUID}");
             }
         }
 
         private IEnumerator LoadAnchorRoutine(Guid anchorUuid)
         {
             List<OVRSpatialAnchor.UnboundAnchor> unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
-            Debug.Log($"Client: Requesting to load unbound anchor info for UUID: {anchorUuid}");
+            Debug.Log($"[Client] Client: Requesting to load unbound anchor info for UUID: {anchorUuid}");
             var loadTask = OVRSpatialAnchor.LoadUnboundSharedAnchorsAsync(anchorUuid, unboundAnchors);
             yield return new WaitUntil(() => loadTask.IsCompleted);
 
@@ -196,7 +196,7 @@ namespace Multiplayer
 
             if (!loadTask.HasResult)
             {
-                Debug.LogError($"Client: Failed to load anchor UUID {anchorUuid}. Status: {loadTask.GetResult().Status}");
+                Debug.LogError($"[Client] Client: Failed to load anchor UUID {anchorUuid}. Status: {loadTask.GetResult().Status}");
                 _anchorLoadRequested = false;
                 ResetAlignment();
                 yield break;
@@ -206,28 +206,28 @@ namespace Multiplayer
 
             if (loadedAnchors.Count == 0)
             {
-                Debug.LogError($"Client: Load query successful, but no anchor found matching UUID: {anchorUuid}");
+                Debug.LogError($"[Client] Client: Load query successful, but no anchor found matching UUID: {anchorUuid}");
                 _anchorLoadRequested = false;
                 ResetAlignment();
                 yield break;
             }
 
-            Debug.Log($"Client: Successfully queried for UUID {anchorUuid}. Found {loadedAnchors.Count} anchor(s).");
+            Debug.Log($"[Client] Client: Successfully queried for UUID {anchorUuid}. Found {loadedAnchors.Count} anchor(s).");
             var unboundAnchorToLocalize = loadedAnchors[0]; // Assume first is the one
         
-            Debug.Log($"Client: Calling LocalizeAsync for unbound anchor {unboundAnchorToLocalize.Uuid}...");
+            Debug.Log($"[Client] Client: Calling LocalizeAsync for unbound anchor {unboundAnchorToLocalize.Uuid}...");
             var localizeTask = unboundAnchorToLocalize.LocalizeAsync();
             yield return new WaitUntil(() => localizeTask.IsCompleted);
 
             if (!localizeTask.GetResult())
             {
-                Debug.LogError($"Client: Failed to localize anchor {unboundAnchorToLocalize.Uuid}.");            _anchorLoadRequested = false;
+                Debug.LogError($"[Client] Client: Failed to localize anchor {unboundAnchorToLocalize.Uuid}.");            _anchorLoadRequested = false;
                 _anchorLoadRequested = false;
                 ResetAlignment();
                 yield break;
             }
 
-            Debug.Log($"Client: Anchor {unboundAnchorToLocalize.Uuid} LocalizeAsync reported success. Now binding the created OVRSpatialAnchor component...");
+            Debug.Log($"[Client] Client: Anchor {unboundAnchorToLocalize.Uuid} LocalizeAsync reported success. Now binding the created OVRSpatialAnchor component...");
         
             // Bind localized unbound anchor to spatial anchor in prefab
             var anchor = Instantiate(anchorPrefab).GetComponent<OVRSpatialAnchor>();
@@ -242,18 +242,18 @@ namespace Multiplayer
             {
                 alignPlayer.SetAlignmentAnchor(_alignmentAnchor.transform);
                 _isAligned = true;
-                Debug.Log($"Alignment successful using anchor: {_alignmentAnchor.Uuid}");
+                Debug.Log($"[Client] Alignment successful using anchor: {_alignmentAnchor.Uuid}");
             }
             else
             {
-                Debug.LogWarning("AlignToAnchor called, but anchor is null or not tracked.");
+                Debug.LogWarning("[Client] AlignToAnchor called, but anchor is null or not tracked.");
                 ResetAlignment();
             }
         }
 
         private void ResetAlignment()
         {
-            Debug.Log("Resetting alignment.");
+            Debug.Log("[Client] Resetting alignment.");
             alignPlayer.SetAlignmentAnchor(null); // Tell AlignPlayer to clear alignment
             _isAligned = false;
             // Don't necessarily destroy the anchor component here unless you know it's invalid
@@ -265,7 +265,7 @@ namespace Multiplayer
         {
             if (!pauseStatus) // Resuming
             {
-                Debug.Log("Application Resuming...");
+                Debug.Log("[Client] Application Resuming...");
                 // Reset state flags to allow re-sync checks
                 _isAligned = false;
                 _anchorLoadRequested = false;
@@ -275,7 +275,7 @@ namespace Multiplayer
             }
             else // Pausing
             {
-                Debug.Log("Application Pausing...");
+                Debug.Log("[Client] Application Pausing...");
             }
         }
 
@@ -284,7 +284,7 @@ namespace Multiplayer
             // Give the system a moment to re-initialize tracking
             yield return new WaitForSeconds(2.0f); // Adjust as needed
 
-            Debug.Log("Checking anchor status after resume...");
+            Debug.Log("[Client] Checking anchor status after resume...");
 
             // 1. Check if the existing anchor reference is still valid and becomes tracked
             if (_alignmentAnchor != null)
@@ -294,13 +294,13 @@ namespace Multiplayer
 
                 if (_alignmentAnchor != null && _alignmentAnchor.Localized)
                 {
-                    Debug.Log("Existing anchor re-acquired tracking after resume. Re-aligning.");
+                    Debug.Log("[Client] Existing anchor re-acquired tracking after resume. Re-aligning.");
                     AlignToAnchor();
                     yield break; // Success
                 }
                 else
                 {
-                    Debug.LogWarning("Existing anchor did not re-acquire tracking after resume.");
+                    Debug.LogWarning("[Client] Existing anchor did not re-acquire tracking after resume.");
                     // Don't destroy it immediately, maybe try loading based on UUID
                     ResetAlignment();
                 }
@@ -309,7 +309,7 @@ namespace Multiplayer
             // 2. If no valid tracked anchor, AND we have a UUID, try loading it again
             if (!_isAligned && !string.IsNullOrEmpty(_targetAnchorUUID))
             {
-                Debug.Log("Attempting to load anchor by UUID after resume.");
+                Debug.Log("[Client] Attempting to load anchor by UUID after resume.");
                 // Clean up old anchor object if it exists but failed to track
                 if (_alignmentAnchor != null)
                 {
@@ -320,7 +320,7 @@ namespace Multiplayer
             }
             else if (!_isAligned)
             {
-                Debug.LogError("Cannot re-sync on resume: No target anchor UUID is known.");
+                Debug.LogError("[Client] Cannot re-sync on resume: No target anchor UUID is known.");
             }
         }
 
@@ -330,7 +330,7 @@ namespace Multiplayer
             // Simple check: If we think we are aligned, but the anchor loses tracking
             if (_isAligned && (_alignmentAnchor == null || !_alignmentAnchor.Localized))
             {
-                Debug.LogWarning($"Alignment anchor {_targetAnchorUUID} lost tracking!");
+                Debug.LogWarning($"[Client] Alignment anchor {_targetAnchorUUID} lost tracking!");
                 ResetAlignment();
                 // Optional: Automatically try to re-load after a delay
                 // if (!_anchorLoadRequested) { Invoke(nameof(AttemptLoadAnchor), 5.0f); }
