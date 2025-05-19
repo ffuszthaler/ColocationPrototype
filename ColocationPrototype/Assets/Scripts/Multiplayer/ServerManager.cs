@@ -57,7 +57,7 @@ namespace Multiplayer
         {
             if (!IsServer) return;
             ConnectedClients[clientId] = $"Player_{clientId}";
-            Debug.Log($"Server: Client connected {clientId}. Total clients: {ConnectedClients.Count}");
+            Debug.Log($"[Server] Server: Client connected {clientId}. Total clients: {ConnectedClients.Count}");
             // The UUID might not be set yet if this is the first client.
             // The host client will set it via ServerRpc later.
         }
@@ -67,7 +67,7 @@ namespace Multiplayer
             if (!IsServer) return;
             if (ConnectedClients.Remove(clientId))
             {
-                Debug.Log($"Server: Client disconnected {clientId}. Remaining clients: {ConnectedClients.Count}");
+                Debug.Log($"[Server] Server: Client disconnected {clientId}. Remaining clients: {ConnectedClients.Count}");
             }
             // If the host disconnects, need logic to potentially select a new host or end session.
         }
@@ -85,16 +85,16 @@ namespace Multiplayer
 
             if (isHost && string.IsNullOrEmpty(sharedAnchorUuid.Value.ToString()) && !string.IsNullOrEmpty(anchorUuidString))
             {
-                Debug.Log($"Server: Received Anchor UUID '{anchorUuidString}' from host client {senderClientId}. Setting NetworkVariable.");
+                Debug.Log($"[Server] Server: Received Anchor UUID '{anchorUuidString}' from host client {senderClientId}. Setting NetworkVariable.");
                 sharedAnchorUuid.Value = new FixedString128Bytes(anchorUuidString);
             }
             else if (!isHost)
             {
-                Debug.LogWarning($"Server: Client {senderClientId} tried to set UUID but is not host.");
+                Debug.LogWarning($"[Server] Server: Client {senderClientId} tried to set UUID but is not host.");
             }
             else if (!string.IsNullOrEmpty(sharedAnchorUuid.Value.ToString()))
             {
-                Debug.LogWarning($"Server: Anchor UUID already set to {sharedAnchorUuid.Value}. Ignoring request from {senderClientId}.");
+                Debug.LogWarning($"[Server] Server: Anchor UUID already set to {sharedAnchorUuid.Value}. Ignoring request from {senderClientId}.");
             }
         }
 
@@ -120,7 +120,7 @@ namespace Multiplayer
             string newUuid = newValue.ToString();
             if (!string.IsNullOrEmpty(newUuid))
             {
-                Debug.Log($"Client {NetworkManager.LocalClientId}: Detected shared anchor UUID update: {newUuid}");
+                Debug.Log($"[Server] Client {NetworkManager.LocalClientId}: Detected shared anchor UUID update: {newUuid}");
                 ClientManager.Instance?.ReceiveAnchorUUID(newUuid);
             }
         }
