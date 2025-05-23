@@ -11134,6 +11134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fce43149dc4683e4dad27e1834765cca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anchorPrefab: {fileID: 0}
   alignPlayer: {fileID: 484335205}
 --- !u!1 &480394170
 GameObject:

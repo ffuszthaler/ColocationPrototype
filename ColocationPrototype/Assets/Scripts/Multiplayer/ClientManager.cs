@@ -13,6 +13,8 @@ public class ClientManager : MonoBehaviour
     private bool alreadySynced = false;
     // private Guid anchorGroupID;
 
+    [SerializeField] private GameObject anchorPrefab;
+
     // private List<OVRSpatialAnchor.UnboundAnchor> _unboundAnchors = new List<OVRSpatialAnchor.UnboundAnchor>();
 
     [SerializeField] private AlignPlayer alignPlayer;
@@ -61,8 +63,9 @@ public class ClientManager : MonoBehaviour
     {
         Debug.Log("Creating spatial anchor");
         // anchorGroupID = Guid.NewGuid();
+        var anchorObject = Instantiate(anchorPrefab);
 
-        sharedAnchor = gameObject.AddComponent<OVRSpatialAnchor>();
+        sharedAnchor = anchorObject.GetComponent<OVRSpatialAnchor>();
         yield return new WaitUntil(() => sharedAnchor.Created);
 
         Debug.Log("Created Anchor: " + sharedAnchor.Uuid.ToString());
@@ -115,11 +118,9 @@ public class ClientManager : MonoBehaviour
             {
                 var localizeReq = unboundAnchor.LocalizeAsync();
                 yield return new WaitUntil(() => localizeReq.IsCompleted);
-                GameObject go = new GameObject("GO");
-                Instantiate(go);
-                go.transform.position = unboundAnchor.Pose.position;
-                go.transform.rotation = unboundAnchor.Pose.rotation;
-
+                GameObject go = Instantiate(anchorPrefab, unboundAnchor.Pose.position, unboundAnchor.Pose.rotation);
+                unboundAnchor.BindTo(go.GetComponent<OVRSpatialAnchor>());
+                
                 alignPlayer.SetAlignmentAnchor(go.transform);
             }
         }
