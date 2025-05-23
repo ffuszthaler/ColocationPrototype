@@ -10,6 +10,7 @@ public class VRConsoleLogger : MonoBehaviour
 
     [Header("Settings")]
     public int maxLogs = 100;
+        private List<string> logMessages = new List<string>();
 
     private Queue<GameObject> logEntries = new Queue<GameObject>();
 
@@ -25,38 +26,36 @@ public class VRConsoleLogger : MonoBehaviour
 
     void HandleLog(string logString, string stackTrace, LogType type)
     {
-        GameObject logObj = Instantiate(logEntryPrefab, contentPanel);
-        TMP_Text logText = logObj.GetComponent<TMP_Text>();
-
-        if (logText == null)
-        {
-            Debug.LogWarning("Log Entry Prefab is missing TMP_Text component.");
-            Destroy(logObj);
-            return;
-        }
-
+        string formattedLog = "";
         switch (type)
         {
+            case LogType.Log:
+                formattedLog = $"<color=white>{logString}</color>";
+                break;
             case LogType.Warning:
-                logText.color = Color.yellow;
+                formattedLog = $"<color=yellow>WARNING: {logString}</color>";
                 break;
             case LogType.Error:
+                formattedLog = $"<color=red>ERROR: {logString}</color>";
+                break;
             case LogType.Exception:
-                logText.color = Color.red;
+                formattedLog = $"<color=red>EXCEPTION: {logString}\n{stackTrace}</color>";
+                break;
+            case LogType.Assert:
+                formattedLog = $"<color=magenta>ASSERT: {logString}</color>";
                 break;
             default:
-                logText.color = Color.white;
+                formattedLog = logString;
                 break;
+
+        }
+                  logMessages.Add(formattedLog);
+        if (logMessages.Count > maxLogs)
+        {
+            logMessages.RemoveAt(0);
         }
 
-        logText.text = logString;
-
-        logEntries.Enqueue(logObj);
-
-        if (logEntries.Count > maxLogs)
-        {
-            GameObject oldLog = logEntries.Dequeue();
-            Destroy(oldLog);
+              
         }
     }
-}
+
