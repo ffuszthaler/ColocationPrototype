@@ -18,6 +18,16 @@ public class ServerManager : NetworkBehaviour
             NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
         }
     }
+    
+    public override void OnNetworkDespawn()
+    {
+        if (NetworkManager != null && IsServer)
+        {
+                NetworkManager.OnClientConnectedCallback -= OnClientConnected;
+                NetworkManager.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+        base.OnNetworkDespawn();
+    }
 
     private void OnClientConnected(ulong clientId)
     {

@@ -119,7 +119,8 @@ public class ClientManager : MonoBehaviour
                 var localizeReq = unboundAnchor.LocalizeAsync();
                 yield return new WaitUntil(() => localizeReq.IsCompleted);
                 GameObject go = Instantiate(anchorPrefab, unboundAnchor.Pose.position, unboundAnchor.Pose.rotation);
-                unboundAnchor.BindTo(go.GetComponent<OVRSpatialAnchor>());
+                sharedAnchor = go.GetComponent<OVRSpatialAnchor>();
+                unboundAnchor.BindTo(sharedAnchor);
                 
                 alignPlayer.SetAlignmentAnchor(go.transform);
             }
